@@ -2,11 +2,24 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
+// 性能监控
 import reportWebVitals from './reportWebVitals'
+// antd样式
+import 'antd/dist/antd.css'
+// 国际化配置 antd组件显示中文
+import { ConfigProvider } from 'antd'
+import zhCN from 'antd/lib/locale/zh_CN'
+// 日期组件显示中文
+import moment from 'moment'
+import 'moment/locale/zh-cn'
+
+moment.locale('zh-cn')
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider locale={zhCN}>
+      <App />
+    </ConfigProvider>
   </React.StrictMode>,
   document.getElementById('root'),
 )
