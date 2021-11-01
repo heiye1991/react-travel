@@ -1,4 +1,5 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import { Row, Col, Typography, Divider } from 'antd'
 import styles from './BusinessPartners.module.css'
 import image1 from '../../assets/images/microsoft-80658_640.png'
@@ -14,10 +15,11 @@ const companies = [
 ]
 
 export const BusinessPartners: React.FC = () => {
+  const { t } = useTranslation()
   return (
     <div className={styles.content}>
       <Divider orientation='left'>
-        <Typography.Title level={3}>合作企业</Typography.Title>
+        <Typography.Title level={3}>{t('home_page.joint_venture')}</Typography.Title>
       </Divider>
       <Row>
         {companies.map((item, index) => (
