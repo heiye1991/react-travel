@@ -12,6 +12,7 @@ import zhCN from 'antd/lib/locale/zh_CN'
 // 日期组件显示中文
 import moment from 'moment'
 import 'moment/locale/zh-cn'
+import './i18n/configs'
 
 moment.locale('zh-cn')
 
