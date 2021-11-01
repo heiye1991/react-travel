@@ -18,6 +18,17 @@ class HeaderComponent extends React.Component<RouteComponentProps, State> {
       languageList: storeState.languageList,
     }
   }
+  menuClickHandle = e => {
+    // 这里只是修改这个组件里的state，没有修改全局的state
+    // this.setState({
+    //   language: e.key,
+    // })
+    const action = {
+      type: 'change_language',
+      payload: e.key,
+    }
+    store.dispatch(action)
+  }
   render() {
     const { history } = this.props
     return (
@@ -27,7 +38,7 @@ class HeaderComponent extends React.Component<RouteComponentProps, State> {
             <Typography.Text>让旅游更幸福</Typography.Text>
             <Dropdown.Button
               overlay={
-                <Menu>
+                <Menu onClick={this.menuClickHandle}>
                   {this.state.languageList.map(l => (
                     <Menu.Item key={l.code}>{l.name}</Menu.Item>
                   ))}
