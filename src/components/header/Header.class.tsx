@@ -4,8 +4,20 @@ import { Button, Dropdown, Input, Layout, Menu, Typography } from 'antd'
 import { GlobalOutlined } from '@ant-design/icons'
 import logo from '../../assets/logo.svg'
 import styles from './Header.module.css'
+import store from '../../redux/store'
+import { LanguageState } from '../../redux/languageReducer'
 
-class HeaderComponent extends React.Component<RouteComponentProps> {
+interface State extends LanguageState {}
+
+class HeaderComponent extends React.Component<RouteComponentProps, State> {
+  constructor(props) {
+    super(props)
+    const storeState = store.getState()
+    this.state = {
+      language: storeState.language,
+      languageList: storeState.languageList,
+    }
+  }
   render() {
     const { history } = this.props
     return (
@@ -16,14 +28,15 @@ class HeaderComponent extends React.Component<RouteComponentProps> {
             <Dropdown.Button
               overlay={
                 <Menu>
-                  <Menu.Item key='zhCN'>中文</Menu.Item>
-                  <Menu.Item key='English'>English</Menu.Item>
+                  {this.state.languageList.map(l => (
+                    <Menu.Item key={l.code}>{l.name}</Menu.Item>
+                  ))}
                 </Menu>
               }
               style={{ marginLeft: 15 }}
               icon={<GlobalOutlined />}
             >
-              语言
+              {this.state.language === 'zh' ? '中文' : '英文'}
             </Dropdown.Button>
             <Button.Group className={styles['button-group']}>
               <Button onClick={() => history.push('/register')}>注册</Button>
