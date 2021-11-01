@@ -18,16 +18,34 @@ class HeaderComponent extends React.Component<RouteComponentProps, State> {
       languageList: storeState.languageList,
     }
   }
+  componentDidMount() {
+    store.subscribe(this.handleStoreChange)
+  }
+  handleStoreChange = () => {
+    const storeState = store.getState()
+    this.setState({
+      language: storeState.language,
+      languageList: storeState.languageList,
+    })
+  }
   menuClickHandle = e => {
-    // 这里只是修改这个组件里的state，没有修改全局的state
-    // this.setState({
-    //   language: e.key,
-    // })
-    const action = {
-      type: 'change_language',
-      payload: e.key,
+    if (e.key === 'new') {
+      const action = {
+        type: 'add_language',
+        payload: { name: '新语言', code: 'new' + Math.random() },
+      }
+      store.dispatch(action)
+    } else {
+      // 这里只是修改这个组件里的state，没有修改全局的state
+      // this.setState({
+      //   language: e.key,
+      // })
+      const action = {
+        type: 'change_language',
+        payload: e.key,
+      }
+      store.dispatch(action)
     }
-    store.dispatch(action)
   }
   render() {
     const { history } = this.props
@@ -42,6 +60,7 @@ class HeaderComponent extends React.Component<RouteComponentProps, State> {
                   {this.state.languageList.map(l => (
                     <Menu.Item key={l.code}>{l.name}</Menu.Item>
                   ))}
+                  <Menu.Item key={'new'}>添加新语言</Menu.Item>
                 </Menu>
               }
               style={{ marginLeft: 15 }}
