@@ -6,7 +6,8 @@ import { GlobalOutlined } from '@ant-design/icons'
 import logo from '../../assets/logo.svg'
 import styles from './Header.module.css'
 import store from '../../redux/store'
-import { LanguageState } from '../../redux/languageReducer'
+import { LanguageState } from '../../redux/language/languageReducer'
+import { changeLanguageActionCreator, addLanguageActionCreator } from '../../redux/language/languageActions'
 
 interface State extends LanguageState {}
 
@@ -31,20 +32,14 @@ class HeaderComponent extends React.Component<RouteComponentProps & WithTranslat
   }
   menuClickHandle = e => {
     if (e.key === 'new') {
-      const action = {
-        type: 'add_language',
-        payload: { name: '新语言', code: 'new' + Math.random() },
-      }
+      const action = addLanguageActionCreator({ name: '新语言', code: 'new' + Math.random() })
       store.dispatch(action)
     } else {
       // 这里只是修改这个组件里的state，没有修改全局的state
       // this.setState({
       //   language: e.key,
       // })
-      const action = {
-        type: 'change_language',
-        payload: e.key,
-      }
+      const action = changeLanguageActionCreator(e.key)
       store.dispatch(action)
     }
   }

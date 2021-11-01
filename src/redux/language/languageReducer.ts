@@ -1,8 +1,9 @@
 import i18n from 'i18next'
+import { CHANGE_LANGUAGE, ADD_LANGUAGE, Language, LanguageProps, LanguageAcitonTypes } from './languageActions'
 
 export interface LanguageState {
-  language: 'en' | 'zh'
-  languageList: { name: string; code: string }[]
+  language: Language
+  languageList: LanguageProps[]
 }
 
 const defaultState: LanguageState = {
@@ -12,12 +13,12 @@ const defaultState: LanguageState = {
     { name: '英文', code: 'en' },
   ],
 }
-const languageReducer = (state = defaultState, action) => {
+const languageReducer = (state = defaultState, action: LanguageAcitonTypes) => {
   switch (action.type) {
-    case 'change_language':
+    case CHANGE_LANGUAGE:
       i18n.changeLanguage(action.payload) // 存在副作用
       return { ...state, language: action.payload }
-    case 'add_language':
+    case ADD_LANGUAGE:
       return { ...state, languageList: [...state.languageList, action.payload] }
     default:
       return state
