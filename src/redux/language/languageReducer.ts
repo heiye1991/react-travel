@@ -1,7 +1,7 @@
 import i18n from 'i18next'
 import { CHANGE_LANGUAGE, ADD_LANGUAGE, Language, LanguageProps, LanguageAcitonTypes } from './languageActions'
 
-export interface LanguageState {
+interface LanguageState {
   language: Language
   languageList: LanguageProps[]
 }
