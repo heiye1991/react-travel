@@ -15,7 +15,7 @@ interface AddLanguageAction {
   payload: LanguageProps
 }
 
-export type LanguageAcitonTypes = ChangeLanguageAction | AddLanguageAction
+export type LanguageActionTypes = ChangeLanguageAction | AddLanguageAction
 
 export const CHANGE_LANGUAGE = 'change_language'
 export const ADD_LANGUAGE = 'add_language'
