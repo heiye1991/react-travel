@@ -2,19 +2,12 @@ import React from 'react'
 import { Row, Col, Typography, Spin } from 'antd'
 import { withTranslation, WithTranslation } from 'react-i18next'
 import { connect } from 'react-redux'
-import { Dispatch } from 'redux'
-import axios from 'axios'
 import { Header, Footer, SideMenu, Carousel, ProductCollection, BusinessPartners } from '../../components/index'
 import sideImage1 from '../../assets/images/sider_2019_12-09.png'
 import sideImage2 from '../../assets/images/sider_2019_02-04.png'
 import sideImage3 from '../../assets/images/sider_2019_02-04-2.png'
 import styles from './HomePage.module.css'
-import {
-  RecommendProductsPros,
-  fetchRecommendProductsStartActionCreator,
-  fetchRecommendProductsSuccessActionCreator,
-  fetchRecommendProductsFailActionCreator,
-} from '../../redux/recommendProducts/recommendProductsActions'
+import { giveDataActionCreator } from '../../redux/recommendProducts/recommendProductsActions'
 import { RootState } from '../../redux/store'
 
 const mapStateToProps = (state: RootState) => {
@@ -26,16 +19,10 @@ const mapStateToProps = (state: RootState) => {
     productList3: state.recommendProducts.productList3,
   }
 }
-const mapDispatchToProps = (dispatch: Dispatch) => {
+const mapDispatchToProps = (dispatch: any) => {
   return {
-    fetchStart: () => {
-      dispatch(fetchRecommendProductsStartActionCreator())
-    },
-    fetchSuccess: (payload: RecommendProductsPros) => {
-      dispatch(fetchRecommendProductsSuccessActionCreator(payload))
-    },
-    fetchFail: (error: any) => {
-      dispatch(fetchRecommendProductsFailActionCreator(error))
+    giveMeData: () => {
+      dispatch(giveDataActionCreator())
     },
   }
 }
@@ -46,59 +33,7 @@ type PropsType = WithTranslation & // 定义i18n props类型
 
 class HomePageComponent extends React.Component<PropsType> {
   componentDidMount() {
-    // 获取每个旅游栏目的数据列表
-    function getProducts(catgoryID: number) {
-      return axios.post('https://vacations.ctrip.com/restapi/gateway/14422/displayWindow', {
-        catgoryID,
-        channel: 'Online',
-        siteID: 1,
-        startCity: 1,
-        version: 'B',
-      })
-    }
-    // 处理获取到的数据列表
-    function dealProducts(arr: any[]) {
-      const products: any[] = []
-      for (const item of arr) {
-        products.push({
-          id: item.id,
-          price: item.price,
-          title: item.name,
-          touristRoutePictures: [
-            {
-              url: item.img,
-            },
-          ],
-        })
-      }
-      return products
-    }
-    this.props.fetchStart()
-    axios
-      .all([getProducts(1), getProducts(2), getProducts(3)])
-      .then(
-        axios.spread((res1, res2, res3) => {
-          const arr1 = res1.data.displayWindowModels[0].tabList[0].products
-          const products1 = dealProducts(arr1)
-
-          const arr2 = res2.data.displayWindowModels[0].tabList[0].products
-          const products2 = dealProducts(arr2)
-
-          const arr3 = res3.data.displayWindowModels[0].tabList[0].products
-          const products3 = dealProducts(arr3)
-
-          this.props.fetchSuccess({
-            productList1: products1,
-            productList2: products2,
-            productList3: products3,
-          })
-        }),
-      )
-      .catch(err => {
-        this.props.fetchFail({
-          error: err.message,
-        })
-      })
+    this.props.giveMeData()
   }
   render() {
     const { t } = this.props
