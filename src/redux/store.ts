@@ -2,6 +2,7 @@ import { createStore, compose, combineReducers, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
 import languageReducer from './language/languageReducer'
 import recommendProductsReducer from './recommendProducts/recommendProductsReducer'
+import { actionLog } from './middlewares/actionLog'
 
 const rootReducer = combineReducers({
   language: languageReducer,
@@ -13,7 +14,7 @@ const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
   ? (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({})
   : compose
 
-const enhancer = composeEnhancers(applyMiddleware(thunk))
+const enhancer = composeEnhancers(applyMiddleware(thunk, actionLog))
 const store = createStore(rootReducer, enhancer)
 
 export type RootState = ReturnType<typeof store.getState>
