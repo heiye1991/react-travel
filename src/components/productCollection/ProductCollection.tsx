@@ -99,15 +99,19 @@ export const ProductCollection: React.FC<PropsType> = ({ title, sideImage, produ
                 price={products[7].price}
               />
             </Col>
-            <Col span={6}>
-              <ProductImage
-                size={'small'}
-                id={products[8].id}
-                title={products[8].title}
-                imageSrc={products[8].touristRoutePictures[0].url}
-                price={products[8].price}
-              />
-            </Col>
+            {products[8] ? (
+              <Col span={6}>
+                <ProductImage
+                  size={'small'}
+                  id={products[8].id}
+                  title={products[8].title}
+                  imageSrc={products[8].touristRoutePictures[0].url}
+                  price={products[8].price}
+                />
+              </Col>
+            ) : (
+              ''
+            )}
           </Row>
         </Col>
       </Row>

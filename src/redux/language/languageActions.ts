@@ -5,6 +5,9 @@ export interface LanguageProps {
   code: string
 }
 
+export const CHANGE_LANGUAGE = 'change_language'
+export const ADD_LANGUAGE = 'add_language'
+
 interface ChangeLanguageAction {
   type: typeof CHANGE_LANGUAGE
   payload: Language
@@ -16,9 +19,6 @@ interface AddLanguageAction {
 }
 
 export type LanguageActionTypes = ChangeLanguageAction | AddLanguageAction
-
-export const CHANGE_LANGUAGE = 'change_language'
-export const ADD_LANGUAGE = 'add_language'
 
 export const changeLanguageActionCreator = (languageCode: Language): ChangeLanguageAction => {
   return {

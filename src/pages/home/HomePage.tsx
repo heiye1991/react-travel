@@ -1,32 +1,50 @@
 import React from 'react'
 import { Row, Col, Typography, Spin } from 'antd'
 import { withTranslation, WithTranslation } from 'react-i18next'
+import { connect } from 'react-redux'
+import { Dispatch } from 'redux'
 import axios from 'axios'
 import { Header, Footer, SideMenu, Carousel, ProductCollection, BusinessPartners } from '../../components/index'
 import sideImage1 from '../../assets/images/sider_2019_12-09.png'
 import sideImage2 from '../../assets/images/sider_2019_02-04.png'
 import sideImage3 from '../../assets/images/sider_2019_02-04-2.png'
 import styles from './HomePage.module.css'
+import {
+  RecommendProductsPros,
+  fetchRecommendProductsStartActionCreator,
+  fetchRecommendProductsSuccessActionCreator,
+  fetchRecommendProductsFailActionCreator,
+} from '../../redux/recommendProducts/recommendProductsActions'
+import { RootState } from '../../redux/store'
 
-interface State {
-  loading: boolean
-  error: string | null
-  productList1: any[]
-  productList2: any[]
-  productList3: any[]
+const mapStateToProps = (state: RootState) => {
+  return {
+    loading: state.recommendProducts.loading,
+    error: state.recommendProducts.error,
+    productList1: state.recommendProducts.productList1,
+    productList2: state.recommendProducts.productList2,
+    productList3: state.recommendProducts.productList3,
+  }
+}
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    fetchStart: () => {
+      dispatch(fetchRecommendProductsStartActionCreator())
+    },
+    fetchSuccess: (payload: RecommendProductsPros) => {
+      dispatch(fetchRecommendProductsSuccessActionCreator(payload))
+    },
+    fetchFail: (error: any) => {
+      dispatch(fetchRecommendProductsFailActionCreator(error))
+    },
+  }
 }
 
-class HomePageComponent extends React.Component<WithTranslation, State> {
-  constructor(props) {
-    super(props)
-    this.state = {
-      loading: true,
-      error: null,
-      productList1: [],
-      productList2: [],
-      productList3: [],
-    }
-  }
+type PropsType = WithTranslation & // 定义i18n props类型
+  ReturnType<typeof mapStateToProps> & // 映射的是redux state的类型
+  ReturnType<typeof mapDispatchToProps> // 映射的是redux dispatch的类型
+
+class HomePageComponent extends React.Component<PropsType> {
   componentDidMount() {
     // 获取每个旅游栏目的数据列表
     function getProducts(catgoryID: number) {
@@ -55,6 +73,7 @@ class HomePageComponent extends React.Component<WithTranslation, State> {
       }
       return products
     }
+    this.props.fetchStart()
     axios
       .all([getProducts(1), getProducts(2), getProducts(3)])
       .then(
@@ -65,12 +84,10 @@ class HomePageComponent extends React.Component<WithTranslation, State> {
           const arr2 = res2.data.displayWindowModels[0].tabList[0].products
           const products2 = dealProducts(arr2)
 
-          const arr3 = res1.data.displayWindowModels[0].tabList[0].products
+          const arr3 = res3.data.displayWindowModels[0].tabList[0].products
           const products3 = dealProducts(arr3)
 
-          this.setState({
-            loading: false,
-            error: null,
+          this.props.fetchSuccess({
             productList1: products1,
             productList2: products2,
             productList3: products3,
@@ -78,15 +95,14 @@ class HomePageComponent extends React.Component<WithTranslation, State> {
         }),
       )
       .catch(err => {
-        this.setState({
-          loading: false,
+        this.props.fetchFail({
           error: err.message,
         })
       })
   }
   render() {
     const { t } = this.props
-    const { productList1, productList2, productList3, loading, error } = this.state
+    const { productList1, productList2, productList3, loading, error } = this.props
 
     if (loading) {
       return (
@@ -150,4 +166,4 @@ class HomePageComponent extends React.Component<WithTranslation, State> {
   }
 }
 
-export const HomePage = withTranslation()(HomePageComponent)
+export const HomePage = connect(mapStateToProps, mapDispatchToProps)(withTranslation()(HomePageComponent))
