@@ -1,12 +1,11 @@
-import axios from 'axios'
-import React, { /*useState,*/ useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { RouteComponentProps, useParams } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
 import { Spin, Row, Col, DatePicker, Divider, Typography, Anchor, Menu } from 'antd'
 import { Header, Footer, ProductIntro, ProductComments } from '../../components'
 import styles from './DetailPage.module.css'
 import { commentMockData } from './mockup'
-import { productDetailSlice } from '../../redux/productDetail/slice'
+import { getProductDetail } from '../../redux/productDetail/slice'
 import { useSelector } from '../../redux/hooks'
 
 interface MatchParams {
@@ -17,9 +16,6 @@ const { RangePicker } = DatePicker
 
 export const DetailPage: React.FC<RouteComponentProps<MatchParams>> = () => {
   const { touristRouteId } = useParams<MatchParams>()
-  // const [loading, setLoading] = useState<boolean>(true)
-  // const [product, setProduct] = useState<any>(null)
-  // const [error, setError] = useState<string | null>(null)
   const loading = useSelector(state => state.productDetail.loading)
   const product = useSelector(state => state.productDetail.data)
   const error = useSelector(state => state.productDetail.error)
@@ -27,26 +23,7 @@ export const DetailPage: React.FC<RouteComponentProps<MatchParams>> = () => {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const fetchData = async () => {
-      // setLoading(true)
-      dispatch(productDetailSlice.actions.fetchStart())
-      try {
-        // 起一个koa2服务返回数据
-        // const { data } = await axios.get(`http://localhost:5000/api/touristRoutes/${touristRouteId}`)
-        // 请求本地json
-        const { data } = await axios.get(`/mock.json?id=${touristRouteId}`)
-        console.log(data)
-        // setProduct(data.result)
-        // setLoading(false)
-        dispatch(productDetailSlice.actions.fetchSuccess(data.result))
-      } catch (err: any) {
-        // setProduct(null)
-        // setLoading(false)
-        // setError(err.message)
-        dispatch(productDetailSlice.actions.fetchFail(err.message))
-      }
-    }
-    fetchData()
+    dispatch(getProductDetail(touristRouteId))
   }, [touristRouteId, dispatch])
 
   if (loading) {
