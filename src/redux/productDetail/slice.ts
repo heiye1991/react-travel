@@ -13,38 +13,28 @@ const initialState: ProductDetailState = {
   data: null,
 }
 
-export const getProductDetail = createAsyncThunk(
-  'productDetail/getProductDetail',
-  async (touristRouteId: string, thunkApi) => {
-    thunkApi.dispatch(productDetailSlice.actions.fetchStart())
-    try {
-      // 起一个koa2服务返回数据
-      // const { data } = await axios.get(`http://localhost:5000/api/touristRoutes/${touristRouteId}`)
-      // 请求本地json
-      const { data } = await axios.get(`/mock.json?id=${touristRouteId}`)
-      console.log(data)
-      thunkApi.dispatch(productDetailSlice.actions.fetchSuccess(data.result))
-    } catch (err: any) {
-      thunkApi.dispatch(productDetailSlice.actions.fetchFail(err.message))
-    }
-  },
-)
+export const getProductDetail = createAsyncThunk('productDetail/getProductDetail', async (touristRouteId: string) => {
+  // 起一个koa2服务返回数据
+  // const { data } = await axios.get(`http://localhost:5000/api/touristRoutes/${touristRouteId}`)
+  // 请求本地json
+  const { data } = await axios.get(`/mock.json?id=${touristRouteId}`)
+  return data.result
+})
 
 export const productDetailSlice = createSlice({
   name: 'productDetail',
   initialState,
-  reducers: {
-    fetchStart: state => {
-      // return { ...state, loading: true }
-      // redux-toolkit 底层使用 immer 可以改变state
+  reducers: {},
+  extraReducers: {
+    [getProductDetail.pending.type]: state => {
       state.loading = true
     },
-    fetchSuccess: (state, action) => {
+    [getProductDetail.fulfilled.type]: (state, action) => {
       state.loading = false
       state.data = action.payload
       state.error = null
     },
-    fetchFail: (state, action: PayloadAction<string | null>) => {
+    [getProductDetail.rejected.type]: (state, action: PayloadAction<string | null>) => {
       state.loading = false
       state.data = null
       state.error = action.payload
