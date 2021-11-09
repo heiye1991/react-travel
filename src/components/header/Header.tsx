@@ -1,18 +1,19 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
-import { Dispatch } from 'redux'
 import { Button, Dropdown, Input, Layout, Menu, Typography } from 'antd'
+import jwt_decode, { JwtPayload as DefaultJwtPayload } from 'jwt-decode'
 import { GlobalOutlined } from '@ant-design/icons'
 import logo from '../../assets/logo.svg'
 import styles from './Header.module.css'
 import { useSelector } from '../../redux/hooks'
-import {
-  LanguageActionTypes,
-  changeLanguageActionCreator,
-  addLanguageActionCreator,
-} from '../../redux/language/languageActions'
+import { changeLanguageActionCreator, addLanguageActionCreator } from '../../redux/language/languageActions'
+import { userSlice } from '../../redux/user/slice'
+
+interface JwtPayload extends DefaultJwtPayload {
+  username: string
+}
 
 export const Header: React.FC = () => {
   const history = useHistory()
@@ -23,7 +24,23 @@ export const Header: React.FC = () => {
   const { t } = useTranslation()
   const language = useSelector(state => state.language.language)
   const languageList = useSelector(state => state.language.languageList)
-  const dispatch = useDispatch<Dispatch<LanguageActionTypes>>()
+  const dispatch = useDispatch()
+
+  const jwt = useSelector(state => state.user.token)
+  const [username, setUsername] = useState('')
+
+  useEffect(() => {
+    if (jwt) {
+      const token = jwt_decode<JwtPayload>(jwt)
+      setUsername(token.username)
+    }
+  }, [jwt])
+
+  const onLogout = () => {
+    dispatch(userSlice.actions.logout())
+    history.push('/')
+    window.location.reload()
+  }
 
   const menuClickHandle = e => {
     if (e.key === 'new') {
@@ -51,10 +68,19 @@ export const Header: React.FC = () => {
           >
             {language === 'zh' ? '中文' : '英文'}
           </Dropdown.Button>
-          <Button.Group className={styles['button-group']}>
-            <Button onClick={() => history.push('/register')}>{t('header.register')}</Button>
-            <Button onClick={() => history.push('/signIn')}>{t('header.signin')}</Button>
-          </Button.Group>
+          {jwt ? (
+            <Button.Group className={styles['button-group']}>
+              <span>{t('header.welcome')}</span>
+              <Typography.Text>{username}</Typography.Text>
+              <Button>{t('header.shoppingCart')}</Button>
+              <Button onClick={onLogout}>{t('header.signOut')}</Button>
+            </Button.Group>
+          ) : (
+            <Button.Group className={styles['button-group']}>
+              <Button onClick={() => history.push('/register')}>{t('header.register')}</Button>
+              <Button onClick={() => history.push('/signIn')}>{t('header.signin')}</Button>
+            </Button.Group>
+          )}
         </div>
       </div>
       <Layout.Header className={styles['main-header']}>

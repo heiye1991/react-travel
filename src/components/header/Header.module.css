@@ -19,6 +19,7 @@
 .button-group {
   float: right;
   margin-top: 5px;
+  line-height: 30px;
 }
 
 .main-header {

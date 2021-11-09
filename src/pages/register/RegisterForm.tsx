@@ -1,5 +1,5 @@
 import { useHistory } from 'react-router-dom'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form, Input, Button, Checkbox, message } from 'antd'
 import axios from 'axios'
 import styles from './RegisterForm.module.css'
 
@@ -16,14 +16,23 @@ export const RegisterForm = () => {
   const onFinish = async (values: any) => {
     console.log('Success:', values)
     try {
-      await axios.post('http://localhost:5000/auth/register', {
-        email: values.username,
-        password: values.password,
-        confirmPassword: values.confirm,
+      // koa 服务
+      // await axios.post('http://localhost:5000/auth/register', {
+      //   username: values.username,
+      //   password: values.password,
+      //   confirmPassword: values.confirm,
+      // })
+      // 本地json
+      await axios.get('/register.json', {
+        params: {
+          username: values.username,
+          password: values.password,
+          confirmPassword: values.confirm,
+        },
       })
       history.push('/signIn')
-    } catch (error) {
-      console.log(error)
+    } catch (error: any) {
+      message.error(error.message)
     }
   }
 

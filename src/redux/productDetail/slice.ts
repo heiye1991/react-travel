@@ -17,7 +17,7 @@ export const getProductDetail = createAsyncThunk('productDetail/getProductDetail
   // 起一个koa2服务返回数据
   // const { data } = await axios.get(`http://localhost:5000/api/touristRoutes/${touristRouteId}`)
   // 请求本地json
-  const { data } = await axios.get(`/mock.json?id=${touristRouteId}`)
+  const { data } = await axios.get(`/productDetail.json?id=${touristRouteId}`)
   return data.result
 })
 
