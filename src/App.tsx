@@ -1,9 +1,19 @@
 import React from 'react'
+import { Redirect } from 'react-router-dom'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import styles from './App.module.css'
-import { HomePage, SignInPage, RegisterPage, DetailPage, SearchPage } from './pages'
+import { HomePage, SignInPage, RegisterPage, DetailPage, SearchPage, ShoppingCartPage } from './pages'
+import { useSelector } from './redux/hooks'
+
+const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
+  const routeComponent = props => {
+    return isAuthenticated ? React.createElement(component, props) : <Redirect to={{ pathname: '/signIn' }} />
+  }
+  return <Route render={routeComponent} {...rest} />
+}
 
 function App() {
+  const jwt = useSelector(state => state.user.token)
   return (
     <div className={styles.App}>
       <Router>
@@ -14,6 +24,7 @@ function App() {
           <Route path='/register' component={RegisterPage} />
           <Route path='/detail/:touristRouteId' component={DetailPage} />
           <Route path='/search/:keywords?' component={SearchPage} />
+          <PrivateRoute path='/shoppingCart' isAuthenticated={jwt !== null} component={ShoppingCartPage} />
           <Route render={() => <h1>404 not found</h1>} />
         </Switch>
       </Router>
