@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Redirect } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import styles from './App.module.css'
-import { HomePage, SignInPage, RegisterPage, DetailPage, SearchPage, ShoppingCartPage } from './pages'
+import { HomePage, SignInPage, RegisterPage, DetailPage, SearchPage, ShoppingCartPage, PlaceOrderPage } from './pages'
 import { useSelector } from './redux/hooks'
+import { getShoppingCart } from './redux/shoppingCart/slice'
 
 const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
   const routeComponent = props => {
@@ -14,6 +16,12 @@ const PrivateRoute = ({ component, isAuthenticated, ...rest }) => {
 
 function App() {
   const jwt = useSelector(state => state.user.token)
+  const dispatch = useDispatch()
+  useEffect(() => {
+    if (jwt) {
+      dispatch(getShoppingCart(jwt))
+    }
+  }, [jwt, dispatch])
   return (
     <div className={styles.App}>
       <Router>
@@ -25,6 +33,7 @@ function App() {
           <Route path='/detail/:touristRouteId' component={DetailPage} />
           <Route path='/search/:keywords?' component={SearchPage} />
           <PrivateRoute path='/shoppingCart' isAuthenticated={jwt !== null} component={ShoppingCartPage} />
+          <PrivateRoute path='/placeOrder' isAuthenticated={jwt !== null} component={PlaceOrderPage} />
           <Route render={() => <h1>404 not found</h1>} />
         </Switch>
       </Router>

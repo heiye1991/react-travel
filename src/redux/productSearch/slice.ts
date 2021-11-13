@@ -18,16 +18,11 @@ const initialState: ProductSearchState = {
 export const searchProduct = createAsyncThunk(
   'productSearch/searchProduct',
   async (parameters: { keywords: string; nextPage: string | number; pageSize: string | number }) => {
-    // 起一个koa2服务返回数据
-    // let url = `http://localhost:5000/api/touristRoutes?pageNumber=${parameters.nextPage}&pageSize=${parameters.pageSize}`
-    // if (parameters.keywords) {
-    //   url += `&keywords=${parameters.keywords}`
-    // }
-    // const { data } = await axios.get(url)
-    // 请求本地json
-    const { data } = await axios.get(
-      `/search.json?pageNumber=${parameters.nextPage}&pageSize=${parameters.pageSize}&keywords=${parameters.keywords}`,
-    )
+    let url = `/api/touristRoutes?pageNumber=${parameters.nextPage}&pageSize=${parameters.pageSize}`
+    if (parameters.keywords) {
+      url += `&keywords=${parameters.keywords}`
+    }
+    const { data } = await axios.get(url)
     return {
       data: data.result,
       pagination: {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useHistory, useLocation, useParams, useRouteMatch } from 'react-router-dom'
+import { useHistory /* useLocation, useParams, useRouteMatch */ } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { Button, Dropdown, Input, Layout, Menu, Typography } from 'antd'
@@ -17,10 +17,10 @@ interface JwtPayload extends DefaultJwtPayload {
 
 export const Header: React.FC = () => {
   const history = useHistory()
-  const location = useLocation()
-  const params = useParams()
-  const match = useRouteMatch()
-  console.log(history, location, params, match)
+  // const location = useLocation()
+  // const params = useParams()
+  // const match = useRouteMatch()
+  // console.log(history, location, params, match)
   const { t } = useTranslation()
   const language = useSelector(state => state.language.language)
   const languageList = useSelector(state => state.language.languageList)
@@ -28,6 +28,9 @@ export const Header: React.FC = () => {
 
   const jwt = useSelector(state => state.user.token)
   const [username, setUsername] = useState('')
+
+  const shoppingCartItems = useSelector(state => state.shoppingCart.items)
+  const shoppingCartLoading = useSelector(state => state.shoppingCart.loading)
 
   useEffect(() => {
     if (jwt) {
@@ -71,7 +74,9 @@ export const Header: React.FC = () => {
             <Button.Group className={styles['button-group']}>
               <span>{t('header.welcome')}</span>
               <Typography.Text>{username}</Typography.Text>
-              <Button onClick={() => history.push('/shoppingCart')}>{t('header.shoppingCart')}</Button>
+              <Button loading={shoppingCartLoading} onClick={() => history.push('/shoppingCart')}>
+                {t('header.shoppingCart')}({shoppingCartItems.length})
+              </Button>
               <Button onClick={onLogout}>{t('header.signOut')}</Button>
             </Button.Group>
           ) : (

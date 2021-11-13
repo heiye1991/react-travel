@@ -1,0 +1,17 @@
+.payment-cart-container {
+  background: #fff;
+}
+.payment-cart-price {
+  padding: 20px;
+}
+.payment-cart-item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+.payment-cart-btn {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding: 20px;
+  border-top: 1px solid #ddd;
+}

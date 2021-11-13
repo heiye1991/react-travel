@@ -54,56 +54,18 @@ export const fetchRecommendProductsFailActionCreator = (error: any): FetchRecomm
 // 业务逻辑可以从ui层面挪出，代码分层更加清晰
 export const giveDataActionCreator =
   (): ThunkAction<void, RootState, unknown, RecommendProductsActionTypes> => (dispatch: Dispatch) => {
-    // 获取每个旅游栏目的数据列表
-    function getProducts(catgoryID: number) {
-      return axios.post('https://vacations.ctrip.com/restapi/gateway/14422/displayWindow', {
-        catgoryID,
-        channel: 'Online',
-        siteID: 1,
-        startCity: 1,
-        version: 'B',
-      })
-    }
-    // 处理获取到的数据列表
-    function dealProducts(arr: any[]) {
-      const products: any[] = []
-      for (const item of arr) {
-        products.push({
-          id: item.id,
-          price: item.price,
-          title: item.name,
-          touristRoutePictures: [
-            {
-              url: item.img,
-            },
-          ],
-        })
-      }
-      return products
-    }
-    dispatch(fetchRecommendProductsStartActionCreator())
+    // 获取首页旅游栏目的数据列表
     axios
-      .all([getProducts(1), getProducts(2), getProducts(3)])
-      .then(
-        axios.spread((res1, res2, res3) => {
-          const arr1 = res1.data.displayWindowModels[0].tabList[0].products
-          const products1 = dealProducts(arr1)
-
-          const arr2 = res2.data.displayWindowModels[0].tabList[0].products
-          const products2 = dealProducts(arr2)
-
-          const arr3 = res3.data.displayWindowModels[0].tabList[0].products
-          const products3 = dealProducts(arr3)
-
-          dispatch(
-            fetchRecommendProductsSuccessActionCreator({
-              productList1: products1,
-              productList2: products2,
-              productList3: products3,
-            }),
-          )
-        }),
-      )
+      .get('/api/recommend/touristRoutes')
+      .then((res: any) => {
+        dispatch(
+          fetchRecommendProductsSuccessActionCreator({
+            productList1: res.data.result.products1,
+            productList2: res.data.result.products2,
+            productList3: res.data.result.products3,
+          }),
+        )
+      })
       .catch(err => {
         dispatch(
           fetchRecommendProductsFailActionCreator({

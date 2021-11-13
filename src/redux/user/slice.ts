@@ -14,17 +14,9 @@ const initialState: UserState = {
 }
 
 export const signIn = createAsyncThunk('user/signIn', async (parameters: { username: string; password: string }) => {
-  // 起一个koa2服务返回数据
-  // const { data } = await axios.post('http://localhost:5000/auth/login', {
-  //   username: parameters.username,
-  //   password: parameters.password,
-  // })
-  // 请求本地json
-  const { data } = await axios.get('/user.json', {
-    params: {
-      username: parameters.username,
-      password: parameters.password,
-    },
+  const { data } = await axios.post('/auth/login', {
+    username: parameters.username,
+    password: parameters.password,
   })
   return data.result.token
 })

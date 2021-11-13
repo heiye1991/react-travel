@@ -16,19 +16,10 @@ export const RegisterForm = () => {
   const onFinish = async (values: any) => {
     console.log('Success:', values)
     try {
-      // koa 服务
-      // await axios.post('http://localhost:5000/auth/register', {
-      //   username: values.username,
-      //   password: values.password,
-      //   confirmPassword: values.confirm,
-      // })
-      // 本地json
-      await axios.get('/register.json', {
-        params: {
-          username: values.username,
-          password: values.password,
-          confirmPassword: values.confirm,
-        },
+      await axios.post('/auth/register', {
+        username: values.username,
+        password: values.password,
+        confirmPassword: values.confirm,
       })
       history.push('/signIn')
     } catch (error: any) {

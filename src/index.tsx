@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import rootStore from './redux/store'
+import axios from 'axios'
 import './index.css'
 import App from './App'
 // 性能监控
@@ -17,6 +18,7 @@ import moment from 'moment'
 import 'moment/locale/zh-cn'
 import './i18n/configs'
 
+axios.defaults.baseURL = 'http://localhost:5000'
 moment.locale('zh-cn')
 
 ReactDOM.render(
